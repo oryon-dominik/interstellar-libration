@@ -1,0 +1,18 @@
+# Changes here will be overwritten by Copier; answer questions in the template instead.
+_commit: 94b70180b3eb54daffd896db67212f52b705fe69
+_src_path: gh:oryon-dominik/templates
+_version: 2026.11.39
+author_email: hallo+legal@cyberise.de
+author_name: cyberise GmbH
+browser_tests: false
+distribution_name: cyberise-libration
+github_org: oryon-dominik
+layer: library
+module_name: libration
+project_description: 'Let a language model choose from a closed list: a strict schema for the model, a checked choice for your code'
+project_name: libration
+python_version: '3.14'
+release: true
+release_trigger: dispatch
+repository_name: interstellar-libration
+station_license: mit
