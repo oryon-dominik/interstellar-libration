@@ -200,6 +200,7 @@ just install   # dependencies, hooks
 just test
 just lint
 just build     # the wheel
+just release   # mint a release on GitHub, then: just publish <tag>
 ```
 
 Changes are listed in [CHANGES.md](https://github.com/oryon-dominik/interstellar-libration/blob/trunk/CHANGES.md).
