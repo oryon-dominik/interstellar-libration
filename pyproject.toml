@@ -1,6 +1,6 @@
 [project]
 name = "cyberise-libration"
-version = "2026.11.0"
+version = "2026.11.1"
 description = "Let a language model choose from a closed list: a strict schema for the model, a checked choice for your code"
 readme = "README.md"
 requires-python = ">=3.14"
