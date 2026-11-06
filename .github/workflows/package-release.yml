@@ -29,7 +29,6 @@ permissions:
 jobs:
   test:
     uses: ./.github/workflows/package-test.yml
-    secrets: inherit
 
   version:
     # After the tests, not beside them: a tag over a red suite is a release of a broken package.
