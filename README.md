@@ -1,5 +1,12 @@
 # libration
 
+[![PyPI](https://img.shields.io/pypi/v/cyberise-libration)](https://pypi.org/project/cyberise-libration/)
+[![python](https://img.shields.io/badge/Python-3.14+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://docs.astral.sh/uv/)
+[![prek](https://img.shields.io/badge/prek-enabled-orange?logo=rust&logoColor=white)](https://github.com/j178/prek)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/oryon-dominik/interstellar-libration/blob/trunk/LICENSE)
+
 Let a language model choose from a closed list: a strict schema for the model, a checked
 choice for your code.
 
