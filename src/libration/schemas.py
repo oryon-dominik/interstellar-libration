@@ -74,13 +74,13 @@ def _arguments(option: Option) -> dict:
 
 
 def _property(argument: Argument) -> dict:
-    found = {"type": argument.kind, "description": argument.description}
+    fragment = {"type": argument.kind, "description": argument.description}
     if argument.values:
-        found["enum"] = list(argument.values)
+        fragment["enum"] = list(argument.values)
     if argument.items is not None:
-        found["items"] = _property(argument.items)
+        fragment["items"] = _property(argument.items)
     if argument.fields:
-        found["properties"] = {name: _property(field) for name, field in argument.fields.items()}
-        found["required"] = list(argument.fields)
-        found["additionalProperties"] = False
-    return found
+        fragment["properties"] = {name: _property(field) for name, field in argument.fields.items()}
+        fragment["required"] = list(argument.fields)
+        fragment["additionalProperties"] = False
+    return fragment
