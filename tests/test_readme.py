@@ -57,3 +57,16 @@ def test_the_argument_example_is_a_valid_argument_table():
         {"choice": "a", "reason": "r", "arguments": {"tags": ["refund"], "customer": {"email": "a@example.com"}}}
     )
     assert isinstance(answers.read(answer=answer, menu=menu), answers.Choice)
+
+
+def test_the_extra_example_carries_what_a_choice_sets_off():
+    """The `route` an option declares in "Writing a menu" is what its choice reads back."""
+    option = re.search(r"```toml\n(?P<body>\[\[option\]\]\n[^`]*?route = .*?)```", README, re.DOTALL)["body"]
+    menu = menus.load(text=f'name = "m"\n{option}')
+    choice = answers.read(answer=json.dumps({"choice": "escalate", "reason": "r", "arguments": {}}), menu=menu)
+    lookup = re.search(r"```python\n(?P<body>[^`]*?\.extra\[.*?)```", README, re.DOTALL)["body"]
+    scope = {"menu": menu, "choice": choice}
+
+    exec(lookup, scope)  # noqa: S102 — the code is this repository's own README
+
+    assert scope["queue"] == "on-call"
