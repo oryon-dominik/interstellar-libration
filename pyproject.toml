@@ -9,7 +9,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 # The wheel names whoever its LICENSE names.
 authors = [{ name = "cyberise GmbH", email = "hallo+legal@cyberise.de" }]
-keywords = ["llm", "structured-output", "json-schema", "openai", "agents", "decision", "toml"]
+keywords = ["llm", "structured-output", "json-schema", "openai", "toml"]
 classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
