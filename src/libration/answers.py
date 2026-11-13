@@ -73,7 +73,9 @@ def _shape_problem(decoded: dict) -> str:
         return f"answer lacks {', '.join(missing)}"
     if unknown := sorted(decoded.keys() - _KEYS):
         return f"answer carries unknown keys: {', '.join(unknown)}"
-    if not isinstance(decoded["reason"], str) or not decoded["reason"].strip():
+    if not isinstance(decoded["reason"], str):
+        return "reason is not a string"
+    if not decoded["reason"].strip():
         return "reason is empty"
     if not isinstance(decoded["arguments"], dict):
         return "arguments is not an object"

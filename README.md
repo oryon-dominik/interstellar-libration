@@ -172,7 +172,7 @@ problem found and the answer as it came, when the answer:
 - is `None`, which a client returns when the model refused or called a tool
 - is not JSON, or not a JSON object — a code fence around it is read through
 - lacks `choice`, `reason` or `arguments`, or carries any other key
-- has an empty `reason`, or `arguments` that are not an object
+- has a `reason` that is empty or no string, or `arguments` that are not an object
 - chooses something that is not on the menu
 - leaves out an argument of the chosen option, or adds one it does not take
 - gives an argument the wrong kind, or a value outside its `values`

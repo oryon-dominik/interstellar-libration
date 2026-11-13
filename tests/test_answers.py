@@ -53,6 +53,7 @@ def _arguments(**changes) -> str:
         (_with(choice=None), "choice"),
         (_with(reason=None), "reason"),
         (_with(reason="  "), "reason"),
+        (_with(reason=5), "reason is not a string"),
         (_with(verdict="yes"), "verdict"),
         (_with(arguments=None), "arguments"),
         (_with(arguments=["TICKET-4711"]), "arguments"),
