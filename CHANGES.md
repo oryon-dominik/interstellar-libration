@@ -2,6 +2,40 @@
 
 ---
 
+## [2026.11.4](https://github.com/oryon-dominik/interstellar-libration/compare/2026.11.3..2026.11.4) - 2026-11-13
+
+### Answers
+
+#### Bug Fixes
+
+- **(answers)** [**breaking**] freeze choices and option extras all the way down — only the top level was read-only - ([efbdb2c](https://github.com/oryon-dominik/interstellar-libration/commit/efbdb2c3f30bf1e983b7f6f82e338946808b8dcd))
+
+
+
+### Menus
+
+#### Bug Fixes
+
+- **(menus)** [**breaking**] a menu built in code passes the checks of load — it skipped every one - ([903bbf7](https://github.com/oryon-dominik/interstellar-libration/commit/903bbf7c55c9f64fcb3b69c78cb989f30070de74))
+- **(menus)** [**breaking**] refuse repeated closed values and menus beyond strict mode's limits — OpenAI refused them late - ([92bbd13](https://github.com/oryon-dominik/interstellar-libration/commit/92bbd130d9175132b12fa7869cb6762487ba4aef))
+
+#### Documentation
+
+- **(menus)** reflow the module docstring — a line broke mid-sentence - ([4ece31d](https://github.com/oryon-dominik/interstellar-libration/commit/4ece31de975f3c9c15ff753945d91de89063a2db))
+
+
+
+### Readme
+
+#### Testing
+
+- **(readme)** run the Option.extra example — no test read it - ([92bb2db](https://github.com/oryon-dominik/interstellar-libration/commit/92bb2db7cc0fe48fe21ab231287d1027a949dcfd))
+
+
+
+
+---
+
 ## [2026.11.3](https://github.com/oryon-dominik/interstellar-libration/compare/2026.11.2..2026.11.3) - 2026-11-13
 
 
