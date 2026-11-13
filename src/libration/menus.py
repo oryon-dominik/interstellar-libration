@@ -2,8 +2,8 @@
 
 A menu that no answer could ever satisfy is refused with an exception — whether it is read
 by :func:`load` or built in code, the same checks run. That is a mistake in the menu, not in
-an answer. Keys libration does not know stay on the
-option as ``extra``: the caller attaches what a choice sets off, libration only carries it.
+an answer. Keys libration does not know stay on the option as ``extra``: the caller
+attaches what a choice sets off, libration only carries it.
 """
 
 import re
