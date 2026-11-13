@@ -110,7 +110,7 @@ def _nested(**arguments) -> str:
 
 def test_arrays_and_objects_are_read_through():
     choice = answers.read(answer=_nested(ids=[1, 2], target={"team": "billing"}), menu=NESTED)
-    assert dict(choice.arguments) == {"ids": [1, 2], "target": {"team": "billing"}}
+    assert dict(choice.arguments) == {"ids": (1, 2), "target": {"team": "billing"}}
 
 
 @pytest.mark.parametrize(
@@ -155,3 +155,10 @@ def test_a_number_that_is_not_finite_is_refused(share):
     )
     answer = f'{{"choice": "a", "reason": "r", "arguments": {{"share": {share}}}}}'
     assert isinstance(answers.read(answer=answer, menu=menu), answers.Refusal)
+
+
+def test_the_arguments_of_a_choice_are_read_only_all_the_way_down():
+    choice = answers.read(answer=_nested(ids=[1, 2], target={"team": "billing"}), menu=NESTED)
+    assert choice.arguments["ids"] == (1, 2)
+    with pytest.raises(TypeError):
+        choice.arguments["target"]["team"] = "support"

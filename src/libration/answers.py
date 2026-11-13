@@ -9,10 +9,9 @@ import json
 import math
 import re
 from collections.abc import Mapping
-from types import MappingProxyType
 from typing import NamedTuple
 
-from .menus import Argument, Menu
+from .menus import Argument, Menu, _frozen
 
 _FENCE = re.compile(r"^```[A-Za-z]*\s*\n(?P<body>.*)\n\s*```$", re.DOTALL)
 _KEYS = {"choice", "reason", "arguments"}
@@ -47,7 +46,7 @@ def read(*, answer: str | None, menu: Menu) -> Choice | Refusal:
     arguments = decoded["arguments"]
     if problem := _fields_problem(arguments, fields=option.arguments, where=f"option {option.name!r}", path=""):
         return Refusal(reason=problem, answer=answer)
-    return Choice(option=option.name, arguments=MappingProxyType(arguments), reason=decoded["reason"])
+    return Choice(option=option.name, arguments=_frozen(arguments), reason=decoded["reason"])
 
 
 def _decoded(answer: str | None) -> dict | str:

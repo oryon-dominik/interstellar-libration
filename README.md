@@ -153,7 +153,7 @@ description = "Their address."
 
 An argument takes only the keys above: a misspelt `value` would leave it open, so it
 raises `MenuError`. Any other key on an option is yours. libration does not read it and
-keeps it on `Option.extra`, which is how a choice can carry what it sets off:
+keeps it on `Option.extra`, read-only, which is how a choice can carry what it sets off:
 
 ```toml
 [[option]]
@@ -193,7 +193,7 @@ numbers. Inside arrays and objects the reason names the path, such as `tags[1]` 
 | `schemas.schema(menu)` | The JSON schema of an answer |
 | `schemas.response_format(menu)` | That schema as a strict `response_format` |
 | `schemas.instructions(menu)` | The same in words, for the prompt |
-| `answers.read(*, answer, menu)` | The reply as `Choice(option, arguments, reason)` or `Refusal(reason, answer)` |
+| `answers.read(*, answer, menu)` | The reply as `Choice(option, arguments, reason)` or `Refusal(reason, answer)`. The arguments are read-only all the way down, arrays as tuples |
 
 ## Development
 

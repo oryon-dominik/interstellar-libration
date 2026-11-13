@@ -212,3 +212,20 @@ def test_a_menu_beyond_the_limits_of_strict_mode_is_refused(build, reason):
     """OpenAI refuses such a schema at request time; the menu is the place to say so."""
     with pytest.raises(menus.MenuError, match=reason):
         build()
+
+
+def test_the_extra_of_an_option_is_read_only_all_the_way_down(menu):
+    route = menu.option("escalate").extra["route"]
+    with pytest.raises(TypeError):
+        route["queue"] = "elsewhere"
+
+
+def test_a_menu_built_in_code_keeps_no_reference_to_what_it_was_handed():
+    """Changing the dict or list afterwards must not change the menu."""
+    arguments = {"n": STRING_ARGUMENT}
+    extra = {"steps": ["a"]}
+    option = menus.Option(name="a", description="x", arguments=arguments, extra=extra)
+    arguments["m"] = STRING_ARGUMENT
+    extra["steps"].append("b")
+    assert list(option.arguments) == ["n"]
+    assert option.extra["steps"] == ("a",)

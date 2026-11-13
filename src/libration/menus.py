@@ -76,7 +76,7 @@ class Option:
             raise MenuError(f"option {self.name!r} has no description")
         _arguments(self.arguments, where=f"option {self.name!r}: argument")
         object.__setattr__(self, "arguments", MappingProxyType(dict(self.arguments)))
-        object.__setattr__(self, "extra", MappingProxyType(dict(self.extra)))
+        object.__setattr__(self, "extra", _frozen(self.extra))
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,6 +147,16 @@ def _argument(declared: object, *, where: str) -> Argument:
         )
     except MenuError as error:
         raise MenuError(f"argument {where}: {error}") from None
+
+
+def _frozen(value: object) -> object:
+    """A read-only copy all the way down: mappings become read-only views, lists tuples."""
+    match value:
+        case Mapping():
+            return MappingProxyType({key: _frozen(each) for key, each in value.items()})
+        case list() | tuple():
+            return tuple(_frozen(each) for each in value)
+    return value
 
 
 def _arguments(arguments: Mapping[str, Argument], *, where: str) -> None:
