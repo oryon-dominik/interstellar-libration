@@ -125,7 +125,7 @@ a different request format, `schemas.schema` returns the bare JSON schema.
 | `[[option]]` | menu | At least one. Names are unique, the order is kept |
 | `name`, `description` | option | Required. The description is what the model reads |
 | `[option.arguments.<name>]` | option | Optional. Every argument is required in an answer |
-| `kind` | argument | `string`, `integer`, `number`, `boolean`, `array` or `object` |
+| `kind` | argument | Required. `string`, `integer`, `number`, `boolean`, `array` or `object` |
 | `description` | argument | Required |
 | `values` | `string` argument | Optional. Closes the argument to a list of strings |
 | `items` | `array` argument | Required. An argument describing each item |
@@ -186,7 +186,7 @@ numbers. Inside arrays and objects the reason names the path, such as `tags[1]` 
 | Name | What it does |
 |---|---|
 | `menus.load(*, text)` | Reads TOML into a `Menu`, or raises `MenuError` |
-| `menus.Menu`, `Option`, `Argument` | The menu as immutable tuples, for building one in code |
+| `menus.Menu`, `Option`, `Argument` | The menu as named tuples. One built in code skips the checks of `load` |
 | `Menu.option(name)` | The option of that name, or `None` |
 | `schemas.schema(menu)` | The JSON schema of an answer |
 | `schemas.response_format(menu)` | That schema as a strict `response_format` |
