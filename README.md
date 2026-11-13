@@ -25,7 +25,7 @@ does not get away. The answers here may wander. They do not leave the menu.
 - **A bad answer is a value, not an exception.** Models get it wrong as a matter of course,
   so `read` returns a `Refusal` with the reason, ready to send back for a retry.
 - **A bad menu fails at once.** A menu no answer could satisfy raises `MenuError` when it
-  is loaded, not in production on the first request.
+  is loaded or built, not in production on the first request.
 - **Menus are data.** They live in TOML beside your code, and anything your application
   needs to attach to an option travels along with it.
 - **No dependencies.** The standard library, nothing else. libration calls no model: you
@@ -186,7 +186,7 @@ numbers. Inside arrays and objects the reason names the path, such as `tags[1]` 
 | Name | What it does |
 |---|---|
 | `menus.load(*, text)` | Reads TOML into a `Menu`, or raises `MenuError` |
-| `menus.Menu`, `Option`, `Argument` | The menu as named tuples. One built in code skips the checks of `load` |
+| `menus.Menu`, `Option`, `Argument` | The menu as frozen dataclasses. Built in code, it passes the checks of `load` |
 | `Menu.option(name)` | The option of that name, or `None` |
 | `schemas.schema(menu)` | The JSON schema of an answer |
 | `schemas.response_format(menu)` | That schema as a strict `response_format` |

@@ -136,3 +136,34 @@ def test_a_menu_name_with_a_trailing_newline_is_refused():
     """OpenAI refuses such a name at request time; the menu is the place to say so."""
     with pytest.raises(menus.MenuError, match="name"):
         menus.load(text=_menu(r'name = "m\n"', *ONE))
+
+
+A = menus.Option(name="a", description="x")
+STRING_ARGUMENT = menus.Argument(kind="string", description="y")
+
+
+@pytest.mark.parametrize(
+    ("build", "reason"),
+    [
+        (lambda: menus.Menu(name="has space", options=(A,)), "name"),
+        (lambda: menus.Menu(name="m", options=()), "no option"),
+        (lambda: menus.Menu(name="m", options=(A, A)), "twice"),
+        (lambda: menus.Menu(name="m", options=("a",)), "option"),
+        (lambda: menus.Option(name="", description="x"), "name"),
+        (lambda: menus.Option(name="a", description=" "), "description"),
+        (lambda: menus.Option(name="a", description="x", arguments={"n": "string"}), "n"),
+        (lambda: menus.Argument(kind="float", description="y"), "kind"),
+        (lambda: menus.Argument(kind="string", description=""), "description"),
+        (lambda: menus.Argument(kind="array", description="y"), "items"),
+        (lambda: menus.Argument(kind="object", description="y"), "fields"),
+        (lambda: menus.Argument(kind="integer", description="y", values=("1",)), "values"),
+        (lambda: menus.Argument(kind="string", description="y", values=(1,)), "values"),
+        (lambda: menus.Argument(kind="string", description="y", items=STRING_ARGUMENT), "items"),
+        (lambda: menus.Argument(kind="string", description="y", fields={"f": STRING_ARGUMENT}), "fields"),
+        (lambda: menus.Argument(kind="object", description="y", fields={"f": "string"}), "f"),
+    ],
+)
+def test_a_menu_built_in_code_passes_the_checks_of_load(build, reason):
+    """There is one door to a menu: built in code, it is refused for what load refuses."""
+    with pytest.raises(menus.MenuError, match=reason):
+        build()
