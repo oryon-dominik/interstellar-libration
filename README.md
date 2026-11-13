@@ -127,12 +127,14 @@ a different request format, `schemas.schema` returns the bare JSON schema.
 | `[option.arguments.<name>]` | option | Optional. Every argument is required in an answer |
 | `kind` | argument | Required. `string`, `integer`, `number`, `boolean`, `array` or `object` |
 | `description` | argument | Required |
-| `values` | `string` argument | Optional. Closes the argument to a list of strings |
+| `values` | `string` argument | Optional. Closes the argument to a list of distinct strings |
 | `items` | `array` argument | Required. An argument describing each item |
 | `[….fields.<name>]` | `object` argument | Required. An argument per field |
 
 Arrays and objects nest, and they stay strict all the way down. A free-form object does
-not exist: strict mode needs every key named.
+not exist: strict mode needs every key named. A menu beyond the limits strict mode
+documents — 5000 properties, objects 10 levels deep, 1000 enum values, 120,000 characters
+of names and values — raises `MenuError` as well.
 
 ```toml
 [option.arguments.tags]

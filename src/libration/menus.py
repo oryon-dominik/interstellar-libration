@@ -8,7 +8,7 @@ option as ``extra``: the caller attaches what a choice sets off, libration only 
 
 import re
 import tomllib
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 from types import MappingProxyType
 
@@ -41,6 +41,8 @@ class Argument:
             raise MenuError(f"kind {self.kind!r} is not one of {', '.join(KINDS)}")
         if isinstance(self.values, str) or not all(isinstance(value, str) for value in self.values):
             raise MenuError("closed values are a list of strings")
+        if twice := sorted({value for value in self.values if self.values.count(value) > 1}):
+            raise MenuError(f"closed values name {', '.join(twice)} twice")
         if self.values and self.kind != "string":
             raise MenuError("closed values belong on a string argument")
         if self.kind == "array" and not isinstance(self.items, Argument):
@@ -96,6 +98,7 @@ class Menu:
         if twice := sorted({each for each in names if names.count(each) > 1}):
             raise MenuError(f"menu {self.name!r} names an option twice: {', '.join(twice)}")
         object.__setattr__(self, "options", options)
+        _check_strict_mode_limits(self)
 
     def option(self, name: str) -> Option | None:
         """The option of that name, or None when the menu offers none."""
@@ -153,6 +156,58 @@ def _arguments(arguments: Mapping[str, Argument], *, where: str) -> None:
     for name, argument in arguments.items():
         if not isinstance(name, str) or not isinstance(argument, Argument):
             raise MenuError(f"{where} {name!r} is no argument but {argument!r}")
+
+
+# OpenAI's documented limits for a strict schema, from "Supported schemas" in
+# https://developers.openai.com/api/docs/guides/structured-outputs (read 2026-11-13).
+# The guide does not say whether an array counts as a level of nesting; only objects are
+# counted here, so a menu this check lets pass may still be refused for its arrays.
+_MOST_PROPERTIES = 5000
+_MOST_LEVELS = 10
+_MOST_ENUM_VALUES = 1000
+_MOST_CHARACTERS = 120_000
+_MOST_LARGE_ENUM_CHARACTERS = 15_000
+_LARGE_ENUM = 250
+_ROOT_PROPERTIES = ("choice", "reason", "arguments")
+
+
+def _check_strict_mode_limits(menu: Menu) -> None:
+    """Refuse a menu whose schema strict mode would refuse, counted as libration.schemas builds it."""
+    # The root object is level 1, the arguments of an option sit in an object at level 2.
+    properties = [walked for option in menu.options for walked in _walked(option.arguments, level=2)]
+    if (count := len(_ROOT_PROPERTIES) + len(properties)) > _MOST_PROPERTIES:
+        raise MenuError(f"menu {menu.name!r} has {count} properties, strict mode allows {_MOST_PROPERTIES}")
+    if (levels := max([2, *(level for _, _, level in properties)])) > _MOST_LEVELS:
+        raise MenuError(f"menu {menu.name!r} nests objects {levels} levels deep, strict mode allows {_MOST_LEVELS}")
+    enums = [tuple(option.name for option in menu.options)]
+    enums += [values for _, argument, _ in properties if (values := _innermost(argument).values)]
+    if (count := sum(map(len, enums))) > _MOST_ENUM_VALUES:
+        raise MenuError(f"menu {menu.name!r} has {count} enum values, strict mode allows {_MOST_ENUM_VALUES}")
+    if any(len(enum) > _LARGE_ENUM and sum(map(len, enum)) > _MOST_LARGE_ENUM_CHARACTERS for enum in enums):
+        raise MenuError(
+            f"menu {menu.name!r} closes an argument to more than {_LARGE_ENUM} enum values"
+            f" of more than {_MOST_LARGE_ENUM_CHARACTERS} characters"
+        )
+    names = [*_ROOT_PROPERTIES, *(name for name, _, _ in properties), *(value for enum in enums for value in enum)]
+    if (count := sum(map(len, names))) > _MOST_CHARACTERS:
+        raise MenuError(
+            f"menu {menu.name!r} spends {count} characters on names and enum values,"
+            f" strict mode allows {_MOST_CHARACTERS}"
+        )
+
+
+def _walked(arguments: Mapping[str, Argument], *, level: int) -> Iterator[tuple[str, Argument, int]]:
+    """Every property of an object at this level, with the level of the object holding it."""
+    for name, argument in arguments.items():
+        yield name, argument, level
+        yield from _walked(_innermost(argument).fields, level=level + 1)
+
+
+def _innermost(argument: Argument) -> Argument:
+    """What an array holds at its core, through arrays of arrays; any other argument itself."""
+    while argument.items is not None:
+        argument = argument.items
+    return argument
 
 
 def _table(value: object, *, where: str) -> dict:

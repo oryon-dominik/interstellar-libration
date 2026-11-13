@@ -167,3 +167,48 @@ def test_a_menu_built_in_code_passes_the_checks_of_load(build, reason):
     """There is one door to a menu: built in code, it is refused for what load refuses."""
     with pytest.raises(menus.MenuError, match=reason):
         build()
+
+
+def test_closed_values_named_twice_are_refused():
+    with pytest.raises(menus.MenuError, match="twice"):
+        menus.load(text=_menu('name = "m"', *OPTION, *STRING, 'values = ["a", "b", "a"]'))
+
+
+def _nested(depth: int) -> menus.Argument:
+    """An object argument whose fields nest objects this many levels deep."""
+    argument = STRING_ARGUMENT
+    for _ in range(depth):
+        argument = menus.Argument(kind="object", description="y", fields={"f": argument})
+    return argument
+
+
+def _one_option(**arguments: menus.Argument) -> menus.Menu:
+    """A menu of one option with these arguments."""
+    return menus.Menu(name="m", options=(menus.Option(name="a", description="x", arguments=arguments),))
+
+
+def _closed(count: int, *, length: int = 1) -> menus.Argument:
+    """A string argument closed to this many distinct values of at least this length."""
+    return menus.Argument(kind="string", description="y", values=tuple(f"{n:0{length}}" for n in range(count)))
+
+
+def test_a_menu_at_the_limits_of_strict_mode_is_built():
+    """Root, option and eight object arguments: ten levels; 1000 enum values, the options counted."""
+    _one_option(deep=_nested(8), wide=_closed(999))
+    _one_option(**{f"n{index}": STRING_ARGUMENT for index in range(4997)})
+
+
+@pytest.mark.parametrize(
+    ("build", "reason"),
+    [
+        (lambda: _one_option(deep=_nested(9)), "levels deep"),
+        (lambda: _one_option(**{f"n{index}": STRING_ARGUMENT for index in range(4998)}), "properties"),
+        (lambda: _one_option(wide=_closed(1000)), "enum values"),
+        (lambda: _one_option(wide=_closed(251, length=60)), "enum values"),
+        (lambda: _one_option(**{"n" * 120_000: STRING_ARGUMENT}), "characters"),
+    ],
+)
+def test_a_menu_beyond_the_limits_of_strict_mode_is_refused(build, reason):
+    """OpenAI refuses such a schema at request time; the menu is the place to say so."""
+    with pytest.raises(menus.MenuError, match=reason):
+        build()
