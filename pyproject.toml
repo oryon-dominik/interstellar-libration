@@ -82,11 +82,12 @@ header = """# libration Changelog
 body = """
 ---
 
+{% set zone = get_env(name="RELEASE_TIMEZONE", default="UTC") %}\
 {% if version %}\
     {% if previous.version %}\
-        ## [{{ version | trim_start_matches(pat="v") }}](https://github.com/oryon-dominik/interstellar-libration/compare/{{ previous.version }}..{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+        ## [{{ version | trim_start_matches(pat="v") }}](https://github.com/oryon-dominik/interstellar-libration/compare/{{ previous.version }}..{{ version }}) - {{ timestamp | date(format="%Y-%m-%d", timezone=zone) }}
     {% else %}\
-        ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+        ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d", timezone=zone) }}
     {% endif %}\
 {% else %}\
     ## [unreleased]
